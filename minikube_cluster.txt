@@ -1,0 +1,72 @@
+sudo apt-get install virtualbox-guest-x11
+sudo VBoxClient --clipboard
+sudo hostnamectl set-hostname rajesh-worker
+
+
+usermod -aG sudo ubuntu
+
+# install required packages
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install -y curl wget apt-transport-https
+
+# Install Docker
+usermod -aG docker ubuntu
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+# install minikube
+
+wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo cp minikube-linux-amd64 /usr/local/bin/minikube
+sudo chmod +x /usr/local/bin/minikube
+
+# start minikube
+# use calico as cni plugin
+minikube start --driver=docker --cpus=2 --memory=2200mb --disk-size=20g --cni=calico
+
+# verify minikube installation
+❯❯ minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+
+
+----
+
+
+# install kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+# verify kubectl installation
+❯❯ kubectl version -o yaml
+clientVersion:
+  buildDate: "2021-12-16T11:41:01Z"
+  compiler: gc
+  gitCommit: 86ec240af8cbd1b60bcc4c03c20da9b98005b92e
+  gitTreeState: clean
+  gitVersion: v1.23.1
+  goVersion: go1.17.5
+  major: "1"
+  minor: "23"
+  platform: linux/amd64
+serverVersion:
+  buildDate: "2021-10-27T18:35:25Z"
+  compiler: gc
+  gitCommit: c92036820499fedefec0f847e2054d824aea6cd1
+  gitTreeState: clean
+  gitVersion: v1.22.3
+  goVersion: go1.16.9
+  major: "1"
+  minor: "22"
+  platform: linux/amd64
+  
+    
+---
